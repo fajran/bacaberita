@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
 
 	(r'^news/update', 'bacaberita.news.views.update'),
+	(r'^$', 'bacaberita.news.views.index'),
 )

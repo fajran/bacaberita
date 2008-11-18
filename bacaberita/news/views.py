@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from bacaberita.news.models import Feed, Article
 
+import datetime
 import feedparser
 import time
 
@@ -31,7 +32,13 @@ def update(request):
 			date = entry.date_parsed
 
 			author = entry.get('author', None)
-			content = entry.get('summary', None)
+
+			try:
+				content = entry.get('summary', None)
+				if not content:
+					content = entry.content[0].value
+			except:
+				pass
 
 			if not Article.objects.filter(article_id=article_id, feed=feed):
 				article = Article(
@@ -52,7 +59,47 @@ def update(request):
 
 	return HttpResponse(html)
 
+def index(req):
 
+	time_read_limit = datetime.datetime.today() - datetime.timedelta(minutes=30)
+	articles = Article.objects.exclude(time_read__lt=time_read_limit).order_by('-date').order_by('feed__title', 'clipped')
+
+	html = ''
+	last_feed = None
+
+	for entry in articles:
+		if last_feed != entry.feed:
+			if last_feed != None:
+				html += '</ul>'
+
+			html += '<h2><a href="%s">%s</a></h2>' % (entry.feed.url, entry.feed)
+			html += '<ul>'
+
+		html += '<li><div><h3><a href="%s">%s</a></a></h3></div>' % (entry.url, entry.title)
+
+		if entry.content:
+			cls = ""
+			if entry.clipped:
+				cls = "clipped"
+
+			html += '<div%s>%s</div>' % (cls, entry.content)
+
+		html += '</li>'
+
+		last_feed = entry.feed
+	
+	html += '</ul>'
+
+	time_read = datetime.datetime.today()
+	for entry in articles:
+		if not entry.time_read:
+			entry.time_read = time_read
+			entry.save()
+
+	return HttpResponse(html)
+		
+		
+	
 
 
 

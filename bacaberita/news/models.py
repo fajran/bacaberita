@@ -1,7 +1,7 @@
 from django.db import models
 
 class Article(models.Model):
-	author = models.CharField(max_length=255, null=True)
+	author = models.CharField(max_length=255, null=True, blank=True)
 	url = models.URLField()
 	date = models.DateTimeField()
 	title = models.CharField(max_length=255)
@@ -10,7 +10,7 @@ class Article(models.Model):
 
 	feed = models.ForeignKey('Feed')
 
-	read = models.BooleanField(default=False)
+	time_read = models.DateTimeField(null=True, default=None)
 	clipped = models.BooleanField(default=False)
 
 	def __unicode__(self):
