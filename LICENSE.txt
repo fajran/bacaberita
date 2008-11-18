@@ -1,0 +1,11 @@
+--2008-11-18 20:28:25--  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+Resolving www.gnu.org... 199.232.41.10
+Connecting to www.gnu.org|199.232.41.10|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 17987 (18K) [text/plain]
+Saving to: `gpl-2.0.txt'
+
+     0K .......... .......                                    100% 18.9K=0.9s
+
+2008-11-18 20:28:26 (18.9 KB/s) - `gpl-2.0.txt' saved [17987/17987]
+
