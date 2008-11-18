@@ -3,7 +3,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils import simplejson
 
-from bacaberita.news.models import Feed, Article
+from bacaberita.news.models import Feed, Article, Category
 
 import datetime
 import feedparser
@@ -65,14 +65,69 @@ def update(request):
 
 def read(req, type=None, id=None):
 	articles = get_articles(type, id)
+
 	template = get_template('news_read.html')
-	html = template.render(Context({'articles': articles}))
+	html = template.render(Context({
+		'articles': articles
+	}))
+
 	return HttpResponse(html)
 
 def json(req, type=None, id=None):
 	articles = get_articles(type, id)
+
 	json = simplejson.dumps(articles)
+
 	return HttpResponse(json, content_type="text/x-json")
+
+def index(req):
+	categories = get_categories()
+
+	template = get_template('news_index.html')
+	html = template.render(Context({
+		'categories': categories[0],
+	}))
+
+	return HttpResponse(html)
+
+def get_categories():
+	categories = Category.objects.all().order_by('id', 'parent__id', 'title')
+
+	res = {}
+	res[0] = {
+		'id': 0,
+		'title': 'root',
+		'children': []
+	}
+
+	for category in categories:
+		if category.parent == None:
+			parent_id = 0
+		else:
+			parent_id = category.parent.id
+
+		item = {
+			'id': category.id,
+			'title': category.title,
+			'children': [],
+			'feeds': []
+		}
+
+		feeds = Feed.objects.filter(category__id=category.id)
+		for feed in feeds:
+			item['feeds'].append({
+				'id': feed.id,
+				'title': feed.title
+			})
+
+		res[category.id] = item
+
+		parent = res[parent_id]
+		parent['children'].append(item)
+
+
+	print repr(res)
+	return res
 
 def get_articles(type=None, id=None):
 

@@ -1,0 +1,16 @@
+<html><head>
+</head><body>
+
+<ul>
+{% for cat in categories.children %}
+<li><p><a onclick="read('cat', {{ cat.id }})" href="/read/cat/{{ cat.id }}">{{ cat.title }}</a></p>
+  <ul>
+  {% for feed in cat.feeds %}
+  <li><a href="/read/feed/{{ feed.id }}">{{ feed.title }}</a></li>
+  {% endfor %}
+  </ul>
+</li>
+{% endfor %}
+</ul>
+
+</body></html>

@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
 
 	(r'^news/update', 'bacaberita.news.views.update'),
-	(r'^$', 'bacaberita.news.views.read'),
+	(r'^$', 'bacaberita.news.views.index'),
 	(r'^read/$', 'bacaberita.news.views.read'),
 	(r'^read/(cat|feed)/(.+)?$', 'bacaberita.news.views.read'),
 	(r'^json/$', 'bacaberita.news.views.json'),
