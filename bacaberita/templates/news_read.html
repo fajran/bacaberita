@@ -1,0 +1,22 @@
+<html><head>
+</head><body>
+
+{% for feed in articles %}
+<div class="feed">
+<h2><a href="{{ feed.url }}">{{ feed.title }}</a></h2>
+
+{% for entry in feed.entries %}
+<div class="entry">
+	<h3><a href="{{ entry.url }}">{{ entry.title }}</a></h3>
+	{% if entry.content %}
+	{% autoescape off %}
+	<div class="content">{{ entry.content }}</div>
+	{% endautoescape %}
+	{% endif %}
+</div>
+{% endfor %}
+
+</div>
+{% endfor %}
+
+</body></html>

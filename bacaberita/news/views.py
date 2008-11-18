@@ -1,4 +1,8 @@
 from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+from django.utils import simplejson
+
 from bacaberita.news.models import Feed, Article
 
 import datetime
@@ -59,45 +63,68 @@ def update(request):
 
 	return HttpResponse(html)
 
-def index(req):
+def read(req, type=None, id=None):
+	articles = get_articles(type, id)
+	template = get_template('news_read.html')
+	html = template.render(Context({'articles': articles}))
+	return HttpResponse(html)
 
-	time_read_limit = datetime.datetime.today() - datetime.timedelta(minutes=30)
+def json(req, type=None, id=None):
+	articles = get_articles(type, id)
+	json = simplejson.dumps(articles)
+	return HttpResponse(json, content_type="text/x-json")
+
+def get_articles(type=None, id=None):
+
+	try:
+		id = int(id)
+	except ValueError:
+		id = -1
+	except TypeError:
+		id = -1
+	
+	time_read_limit = datetime.datetime.today() - datetime.timedelta(minutes=1130)
 	articles = Article.objects.exclude(time_read__lt=time_read_limit).order_by('-date').order_by('feed__title', 'clipped')
+
+	if type == 'cat':
+		articles = articles.filter(feed__category__id=id)
+	elif type == 'feed':
+		articles = articles.filter(feed__id=id)
 
 	html = ''
 	last_feed = None
 
+	feed = {}
+	res = []
+
+	time_read = datetime.datetime.today()
+
 	for entry in articles:
 		if last_feed != entry.feed:
 			if last_feed != None:
-				html += '</ul>'
+				res.append(feed)
 
-			html += '<h2><a href="%s">%s</a></h2>' % (entry.feed.url, entry.feed)
-			html += '<ul>'
+			feed = {}
+			feed['url'] = entry.feed.url
+			feed['title'] = entry.feed.title
+			feed['entries'] = []
 
-		html += '<li><div><h3><a href="%s">%s</a></a></h3></div>' % (entry.url, entry.title)
-
-		if entry.content:
-			cls = ""
-			if entry.clipped:
-				cls = "clipped"
-
-			html += '<div%s>%s</div>' % (cls, entry.content)
-
-		html += '</li>'
+		feed['entries'].append({
+			'url': entry.url,
+			'title': entry.title,
+			'content': entry.content,
+			'clipped': entry.clipped
+		})
 
 		last_feed = entry.feed
-	
-	html += '</ul>'
 
-	time_read = datetime.datetime.today()
-	for entry in articles:
 		if not entry.time_read:
 			entry.time_read = time_read
 			entry.save()
 
-	return HttpResponse(html)
-		
+	res.append(feed)
+	
+	return res
 		
 	
 
