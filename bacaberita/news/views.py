@@ -162,9 +162,11 @@ def get_articles(type=None, id=None):
 			feed = {}
 			feed['url'] = entry.feed.url
 			feed['title'] = entry.feed.title
+			feed['id'] = entry.feed.id
 			feed['entries'] = []
 
 		feed['entries'].append({
+			'id': entry.id,
 			'url': entry.url,
 			'title': entry.title,
 			'content': entry.content,

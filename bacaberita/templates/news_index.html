@@ -1,9 +1,19 @@
 <html><head>
+<title>BacaBerita</title>
+<link rel="stylesheet" type="text/css" href="/static/bacaberita.css"/>
+<script type="text/javascript" src="/static/jquery.js"></script>
+<script type="text/javascript" src="/static/bacaberita.js"></script>
 </head><body>
 
+<div id="header">
+	<h1>BacaBerita</h1>
+</div>
+<div id="main">
+
+<div id="cat">
 <ul>
 {% for cat in categories.children %}
-<li><p><a onclick="read('cat', {{ cat.id }})" href="/read/cat/{{ cat.id }}">{{ cat.title }}</a></p>
+<li><p><a href="/read/cat/{{ cat.id }}">{{ cat.title }}</a></p>
   <ul>
   {% for feed in cat.feeds %}
   <li><a href="/read/feed/{{ feed.id }}">{{ feed.title }}</a></li>
@@ -12,5 +22,18 @@
 </li>
 {% endfor %}
 </ul>
+</div>
+
+<div id="content">
+
+	<div id="articles">
+	</div>
+
+</div>
+
+</div>
+<div id="footer">
+	<p><a href="http://github.com/fajran/bacaberita">BacaBerita</a></p>
+</div>
 
 </body></html>

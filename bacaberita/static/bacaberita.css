@@ -1,0 +1,42 @@
+body {
+	margin: 0px;
+	font-family: optima, verdana, sans-serif;
+}
+h1 {
+	margin: 0px;
+}
+
+#cat {
+	float: left;
+	padding: 0 10px;
+	width: 200px;
+	font-size: 14px;
+}
+#cat > ul > li {
+	margin-bottom: 10px;
+}
+#cat ul {
+	padding-left: 16px;
+	margin: 0px;
+}
+#cat ul li p {
+	margin: 0px;
+}
+
+#content {
+	margin-left: 220px;
+	padding: 0 20px 0 10px;
+}
+
+#footer {
+	clear: both;
+}
+
+#articles {
+	font-size: 14px;
+}
+
+#articles h2 {
+	margin: 0px;
+}
+
